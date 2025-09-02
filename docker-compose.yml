@@ -27,7 +27,7 @@ services:
       interval: 5s
       retries: 10
 
-  main-service:
+  ewm-service:
     build: ./main-service
     ports:
       - "8080:8080"
@@ -53,10 +53,10 @@ services:
       - POSTGRES_USER=ewm-db
       - POSTGRES_PASSWORD=ewm-db
     healthcheck:
-        test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
-        interval: 5s
-        timeout: 5s
-        retries: 10
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 
 volumes:
