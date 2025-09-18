@@ -69,7 +69,7 @@ public class EventMapper {
                 event.getAnnotation(),
                 categoryDto,
                 null,
-                event.getCreatedOn(),
+                truncateToMillis(event.getCreatedOn()),
                 event.getDescription(),
                 event.getEventDate(),
                 event.getId(),
@@ -77,12 +77,17 @@ public class EventMapper {
                 event.getLocation(),
                 event.getPaid(),
                 event.getParticipantLimit(),
-                event.getPublishedOn(),
+                truncateToMillis(event.getPublishedOn()),
                 event.getRequestModeration(),
                 event.getState(),
                 event.getTitle(),
                 null
         );
+    }
+
+    private static LocalDateTime truncateToMillis(LocalDateTime time) {
+        if (time == null) return null;
+        return time.withNano(time.getNano() / 1_000_000 * 1_000_000);
     }
 
 }

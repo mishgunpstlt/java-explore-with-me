@@ -21,7 +21,7 @@ public class RequestMapper {
 
     public static RequestDto toDto(Request request) {
         return new RequestDto(
-                request.getCreated().withNano(request.getCreated().getNano() / 1000 * 1000),
+                request.getCreated().withNano(request.getCreated().getNano() / 1_000_000 * 1_000_000),
                 request.getEvent().getId(),
                 request.getId(),
                 request.getRequester().getId(),
