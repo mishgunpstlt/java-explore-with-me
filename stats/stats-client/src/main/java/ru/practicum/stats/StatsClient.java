@@ -7,12 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.practicum.client.BaseClient;
 import ru.practicum.dto.EndpointHitDto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class StatsClient extends BaseClient {
@@ -31,13 +31,17 @@ public class StatsClient extends BaseClient {
         post("/hit", hitDto);
     }
 
-    public ResponseEntity<Object> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
-        Map<String, Object> parameters = Map.of(
-                "start", start,
-                "end", end,
-                "uris", uris,
-                "unique", unique);
+    public ResponseEntity<Object> getStats(Instant start, Instant end, List<String> uris, boolean unique) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/stats")
+                .queryParam("start", start.toString())
+                .queryParam("end", end.toString())
+                .queryParam("unique", unique);
 
-        return get("/stats", parameters);
+        if (uris != null && !uris.isEmpty()) {
+            uris.forEach(uri -> builder.queryParam("uris", uri));
+        }
+
+        String uriString = builder.toUriString();
+        return get(uriString);
     }
 }

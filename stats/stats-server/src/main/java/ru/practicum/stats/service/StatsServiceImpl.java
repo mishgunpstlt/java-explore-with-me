@@ -6,12 +6,11 @@ import org.springframework.stereotype.Service;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.stats.dal.StatsRepository;
+import ru.practicum.stats.exception.BadRequestException;
 import ru.practicum.stats.mapper.HitMapper;
 import ru.practicum.stats.model.EndpointHit;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 
 
@@ -30,11 +29,12 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public List<ViewStatsDto> getStats(LocalDateTime startTime, LocalDateTime endTime,
+    public List<ViewStatsDto> getStats(Instant start, Instant end,
                                        List<String> uris, boolean unique) {
 
-        Instant start = startTime.toInstant(ZoneOffset.UTC);
-        Instant end = endTime.toInstant(ZoneOffset.UTC);
+        if (start.isAfter(end)) {
+            throw new BadRequestException("Дата начала не может быть позже даты конца поиска");
+        }
 
         List<Object[]> stats;
 
@@ -43,8 +43,6 @@ public class StatsServiceImpl implements StatsService {
         } else {
             stats = statsRepository.findAllStats(start, end, uris);
         }
-
-        log.info("Получения статистики: {}", stats);
 
         return stats.stream()
                 .map(obj -> new ViewStatsDto(obj[0].toString(),
