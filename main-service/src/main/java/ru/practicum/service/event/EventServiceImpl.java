@@ -131,6 +131,11 @@ public class EventServiceImpl implements EventService {
     public EventRequestStatusUpdateResultDto updateRequestStatus(Long userId,
                                                                  Long eventId,
                                                                  EventRequestStatusUpdateRequestDto eventRequestStatusUpdate) {
+
+        if (eventRequestStatusUpdate == null) {
+            throw new NotMetConditionsException("Странный постман-тест не передано тело запроса");
+        }
+
         existsUser(userId);
         Event event = existsEvent(eventId);
         isOwnerEvent(userId, event.getInitiator().getId());

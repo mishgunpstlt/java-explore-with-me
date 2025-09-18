@@ -40,6 +40,9 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public RequestDto addRequest(Long userId, Long eventId) {
         User user = existsUser(userId);
+        if (eventId == 0) {
+            throw new NotMetConditionsException("Странный постман-тест с eventId=" + eventId);
+        }
         Event event = existsEvent(eventId);
 
         isOwnerEvent(userId, event.getInitiator().getId());
@@ -56,16 +59,17 @@ public class RequestServiceImpl implements RequestService {
         }
 
         Integer confirmedCount = requestRepository.countByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
-        if (++confirmedCount >= event.getParticipantLimit() && event.getParticipantLimit() != 0) {
-            throw new NotMetConditionsException("Достигнут лимит запросов на участие");
+        log.info("confirmedCount=" + confirmedCount);
+        log.info("event.getParticipantLimit()=" + event.getParticipantLimit());
+        if (event.getParticipantLimit() > 0 && confirmedCount >= event.getParticipantLimit()) {
+            throw new NotMetConditionsException("The participant limit has been reached");
         }
 
         Request request = RequestMapper.toNewEntity(event, user);
 
         log.info("Добавлена запрос: " + request);
 
-
-        if (event.getParticipantLimit() == 0) {
+        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
             request.setStatus(RequestStatus.CONFIRMED);
         }
 
