@@ -1,5 +1,6 @@
 package ru.practicum.stats;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -11,10 +12,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import ru.practicum.client.BaseClient;
 import ru.practicum.dto.EndpointHitDto;
 
-import java.time.Instant;
 import java.util.List;
 
 @Service
+@Slf4j
 public class StatsClient extends BaseClient {
 
     @Autowired
@@ -31,10 +32,10 @@ public class StatsClient extends BaseClient {
         post("/hit", hitDto);
     }
 
-    public ResponseEntity<Object> getStats(Instant start, Instant end, List<String> uris, boolean unique) {
+    public ResponseEntity<Object> getStats(String start, String end, List<String> uris, boolean unique) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/stats")
-                .queryParam("start", start.toString())
-                .queryParam("end", end.toString())
+                .queryParam("start", start)
+                .queryParam("end", end)
                 .queryParam("unique", unique);
 
         if (uris != null && !uris.isEmpty()) {

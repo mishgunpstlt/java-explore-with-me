@@ -33,6 +33,8 @@ import ru.practicum.stats.StatsClient;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -380,12 +382,18 @@ public class EventServiceImpl implements EventService {
         Instant start = Instant.parse("2000-01-01T00:00:00Z");
         Instant end = Instant.now().plusSeconds(1);
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneOffset.UTC);
+        String startStr = formatter.format(start);
+        String endStr = formatter.format(end);
+
         ResponseEntity<Object> response = statsClient.getStats(
-                start,
-                end,
+                startStr,
+                endStr,
                 uris,
                 true
         );
+
+        log.info("Из основного сервиса response=" + response);
 
         Object body = response.getBody();
 
