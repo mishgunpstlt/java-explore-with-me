@@ -2,8 +2,9 @@ package ru.practicum.model.event;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.model.category.Category;
 import ru.practicum.model.user.User;
 
@@ -13,7 +14,8 @@ import java.time.LocalDateTime;
 @Table(name = "events")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class Event {
 
     @Id

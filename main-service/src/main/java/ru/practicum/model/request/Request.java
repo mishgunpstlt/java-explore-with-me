@@ -2,8 +2,9 @@ package ru.practicum.model.request;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.model.event.Event;
 import ru.practicum.model.user.User;
 
@@ -13,7 +14,8 @@ import java.time.LocalDateTime;
 @Table(name = "requests")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class Request {
 
     @Id
